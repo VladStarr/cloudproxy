@@ -6,6 +6,8 @@ config = {
     "no_auth": False,
     "only_host_ip": False,
     "age_limit": 0,
+    "idle_interval_before_remove": 30,
+    "deploy_batch_size": 3,
     "providers": {
         "digitalocean": {
             "enabled": False,
