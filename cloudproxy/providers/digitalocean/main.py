@@ -29,7 +29,10 @@ def do_deployment(min_scaling):
         logger.info("Minimum DO Droplets met")
     else:
         total_deploy = min_scaling - total_droplets
-        total_deploy = min(config["deploy_batch_size"], total_deploy)
+
+        if config["deploy_batch_size"] > 0:
+            total_deploy = min(config["deploy_batch_size"], total_deploy)
+            
         logger.info("Deploying: " + str(total_deploy) + " DO droplets")
         for _ in range(total_deploy):
             create_proxy()
