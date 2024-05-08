@@ -29,6 +29,10 @@ def do_deployment(min_scaling):
         logger.info("Minimum DO Droplets met")
     else:
         total_deploy = min_scaling - total_droplets
+
+        if config["deploy_batch_size"] > 0:
+            total_deploy = min(config["deploy_batch_size"], total_deploy)
+            
         logger.info("Deploying: " + str(total_deploy) + " DO droplets")
         for _ in range(total_deploy):
             create_proxy()
@@ -50,7 +54,8 @@ def do_check_alive():
                 )
             elif check_alive(droplet.ip_address):
                 logger.info("Alive: DO -> " + str(droplet.ip_address))
-                ip_ready.append(droplet.ip_address)
+                if (config["age_limit"] > 0 and elapsed < datetime.timedelta(seconds=config["age_limit"] - config["idle_interval_before_remove"])) or (config["age_limit"] == 0):
+                    ip_ready.append(droplet.ip_address)
             else:
                 if elapsed > datetime.timedelta(minutes=10):
                     delete_proxy(droplet)

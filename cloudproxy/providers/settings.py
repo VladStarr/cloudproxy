@@ -6,6 +6,8 @@ config = {
     "no_auth": False,
     "only_host_ip": False,
     "age_limit": 0,
+    "idle_interval_before_remove": 0,
+    "deploy_batch_size": 0,
     "providers": {
         "digitalocean": {
             "enabled": False,
@@ -57,6 +59,9 @@ load_dotenv()
 config["auth"]["username"] = os.environ.get("USERNAME", "changeme")
 config["auth"]["password"] = os.environ.get("PASSWORD", "changeme")
 config["age_limit"] = int(os.environ.get('AGE_LIMIT', 0))
+config["idle_interval_before_remove"] = int(os.environ.get('IDLE_INTERVAL_BEFORE_REMOVE', 0))
+config["deploy_batch_size"] = int(os.environ.get('DEPLOY_BATCH_SIZE', 0))
+
 config["no_auth"] = config["auth"]["username"] == "changeme" and config["auth"]["password"] == "changeme"
 config["only_host_ip"] = os.environ.get("ONLY_HOST_IP", False)
 
