@@ -23,6 +23,10 @@ def hetzner_deployment(min_scaling):
         logger.info("Minimum Hetzner proxies met")
     else:
         total_deploy = min_scaling - total_proxies
+
+        if config["deploy_batch_size"] > 0:
+            total_deploy = min(config["deploy_batch_size"], total_deploy)
+
         logger.info("Deploying: " + str(total_deploy) + " Hetzner proxy")
         for _ in range(total_deploy):
             create_proxy()
@@ -43,7 +47,8 @@ def hetzner_check_alive():
             )
         elif check_alive(proxy.public_net.ipv4.ip):
             logger.info("Alive: Hetzner -> " + str(proxy.public_net.ipv4.ip))
-            ip_ready.append(proxy.public_net.ipv4.ip)
+            if (config["age_limit"] > 0 and elapsed < datetime.timedelta(seconds=config["age_limit"] - config["idle_interval_before_remove"])) or (config["age_limit"] == 0):
+                ip_ready.append(proxy.public_net.ipv4.ip)
         else:
             if elapsed > datetime.timedelta(minutes=10):
                 delete_proxy(proxy)

@@ -52,9 +52,10 @@ def do_check_alive():
                 logger.info(
                     "Recycling droplet, reached age limit -> " + str(droplet.ip_address)
                 )
-            elif check_alive(droplet.ip_address) and config["age_limit"] > 0 and elapsed < datetime.timedelta(seconds=config["age_limit"] - config["idle_interval_before_remove"]):
+            elif check_alive(droplet.ip_address):
                 logger.info("Alive: DO -> " + str(droplet.ip_address))
-                ip_ready.append(droplet.ip_address)
+                if (config["age_limit"] > 0 and elapsed < datetime.timedelta(seconds=config["age_limit"] - config["idle_interval_before_remove"])) or (config["age_limit"] == 0):
+                    ip_ready.append(droplet.ip_address)
             else:
                 if elapsed > datetime.timedelta(minutes=10):
                     delete_proxy(droplet)
